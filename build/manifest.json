@@ -2,7 +2,7 @@
   "name": "Limit Breaker System",
   "short_name": "LB System",
   "description": "Your ultimate self-improvement dashboard.",
-  "start_url": "./",
+  "start_url": "https://limit-breaker-system.netlify.app/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ff0000",
