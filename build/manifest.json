@@ -1,0 +1,21 @@
+{
+  "name": "Limit Breaker System",
+  "short_name": "LB System",
+  "description": "Your ultimate self-improvement dashboard.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff0000",
+  "icons": [
+    {
+      "src": "system-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "system-icon-512(1).png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

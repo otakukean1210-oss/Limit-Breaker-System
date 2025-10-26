@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUNG JIN-WOO: DAILY QUEST (OPERATION: GREEK GOD)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="solo-leveling-header">
+        <h1>[SYSTEM WINDOW]</h1>
+        <h2>Limit Breaker System - Level Up Quest</h2>
+    </header>
+
+    <main class="system-dashboard">
+        <div class="status-card">
+            <h3>[STATUS]</h3>
+            <p>Name: <input type="text" id="name-input" class="stat-input" value="Limit Breaker"></p>
+            <p>Title: <span class="stat-value">The Ascendant</span></p>
+            <p>Level: <span id="level-stat" class="stat-value">1</span></p>
+            <p>Fatigue: <span class="stat-value">0</span></p>
+
+            <h3 class="stat-h3">Physical Metrics</h3>
+            <p>Height: <input type="text" id="height-input" class="stat-input" value="5'10" size="6"></p> 
+            <p>Weight: <input type="text" id="weight-input" class="stat-input" value="170 lbs" size="6"></p> 
+
+            <h3 class="stat-h3">Core Stats</h3>
+            <ul id="core-stats">
+                <li>Strength: <span id="strength-stat" class="stat-value">10.0</span></li>
+                <li>Endurance: <span id="endurance-stat" class="stat-value">10.0</span></li>
+                <li>Agility: <span id="agility-stat" class="stat-value">10.0</span></li>
+                <li>Perception: <span id="perception-stat" class="stat-value">10.0</span></li>
+            </ul>
+            
+            <div class="exp-bar-container">
+                <div class="exp-label">EXP: <span id="current-exp-display">0</span> / <span id="max-exp-display">100</span></div>
+                <div id="exp-bar" class="exp-bar-fill" style="width: 0%;"></div>
+            </div>
+
+        </div>
+        
+        <div class="graph-card">
+            <h3>[STAT ANALYSIS]</h3>
+            <canvas id="stat-chart"></canvas>
+        </div>
+
+        <div class="weekly-quest-log">
+            <div class="quest-log-header">
+                <h3>[DAILY QUEST LOG]</h3>
+                <button id="edit-quests-btn" class="system-btn">[EDIT QUEST LOG]</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="day-check-col">Day Complete</th>
+                        <th>Day & Focus</th>
+                        <th>Routine / Tasks (Click to gain EXP)</th>
+                    </tr>
+                </thead>
+                <tbody id="quest-log-body">
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+    
+    <div id="quest-editor-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>[QUEST EDITOR: JSON FORMAT]</h3>
+            <p class="editor-tip">Edit the names, EXP, and stat focus (`strength`, `endurance`, `agility`, `perception`). Use valid JSON format!</p>
+            <textarea id="editor-textarea" rows="20"></textarea>
+            <div class="modal-actions">
+                <button id="save-editor-btn" class="system-btn">SAVE CHANGES</button>
+                <button id="close-editor-btn" class="system-btn close-btn">CLOSE</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
