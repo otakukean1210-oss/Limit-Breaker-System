@@ -7,7 +7,8 @@ if (self.workbox) {
     { url: 'script.js', revision: '1' },
     { url: 'manifest.json', revision: '1' },
     { url: 'https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js', revision: '1' },
-    { url: 'result_Ah-Jin_Logo_Ch.141.PNG.png', revision: '1' }
+    { url: 'system-icon-192.png', revision: '1' }, 
+    { url: 'system-icon-512(1).png', revision: '1' },
   ]);
   
 
