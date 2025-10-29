@@ -376,6 +376,10 @@ function init() {
     document.getElementById('height-input').addEventListener('change', handleInputSave);
     document.getElementById('weight-input').addEventListener('change', handleInputSave);
 
+    document.getElementById('add-profile-btn').addEventListener('click', handleAddProfile);
+    docuument.getElementById('user-profile-select').addEventListener('click', handleSwitchProfile);
+    document.getElementById('switch-profile-btn').addEventListener('click', handleSwitchProfile);
+
     document.getElementById('edit-quests-btn').addEventListener('click', openEditor);
     document.getElementById('save-editor-btn').addEventListener('click', saveEditorContent);
     document.getElementById('close-editor-btn').addEventListener('click', closeEditor);
