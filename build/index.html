@@ -18,30 +18,36 @@
 
     <main class="system-dashboard">
         <div class="status-card">
-            <h3>[STATUS]</h3>
-            <p>Name: <input type="text" id="name-input" class="stat-input" value="Limit Breaker"></p>
-            <p>Title: <span class="stat-value">The Ascendant</span></p>
-            <p>Level: <span id="level-stat" class="stat-value">1</span></p>
-            <p>Fatigue: <span class="stat-value">0</span></p>
+    <h3>[USER PROFILE]</h3>
+    <select id="user-profile-select">
+        </select>
+    <button id="add-profile-btn" class="system-btn">New Player</button>
+    <button id="switch-profile-btn" class="system-btn close-btn">Switch</button>
+    <hr style="border-color: #445ef2; margin: 10px 0;">
 
-            <h3 class="stat-h3">Physical Metrics</h3>
-            <p>Height: <input type="text" id="height-input" class="stat-input" value="5'10" size="6"></p> 
-            <p>Weight: <input type="text" id="weight-input" class="stat-input" value="170 lbs" size="6"></p> 
+    <h3>[STATUS]</h3>
+    <p>Name: <input type="text" id="name-input" class="stat-input" value="Limit Breaker"></p>
+    <p>Title: <span class="stat-value">The Ascendant</span></p>
+    <p>Level: <span id="level-stat" class="stat-value">1</span></p>
+    <p>Fatigue: <span class="stat-value">0</span></p>
 
-            <h3 class="stat-h3">Core Stats</h3>
-            <ul id="core-stats">
-                <li>Strength: <span id="strength-stat" class="stat-value">10.0</span></li>
-                <li>Endurance: <span id="endurance-stat" class="stat-value">10.0</span></li>
-                <li>Agility: <span id="agility-stat" class="stat-value">10.0</span></li>
-                <li>Perception: <span id="perception-stat" class="stat-value">10.0</span></li>
-            </ul>
-            
-            <div class="exp-bar-container">
-                <div class="exp-label">EXP: <span id="current-exp-display">0</span> / <span id="max-exp-display">100</span></div>
-                <div id="exp-bar" class="exp-bar-fill" style="width: 0%;"></div>
-            </div>
+    <h3 class="stat-h3">Physical Metrics</h3>
+    <p>Height: <input type="text" id="height-input" class="stat-input" value="5'10" size="6"></p> 
+    <p>Weight: <input type="text" id="weight-input" class="stat-input" value="170 lbs" size="6"></p> 
 
-        </div>
+    <h3 class="stat-h3">Core Stats</h3>
+    <ul id="core-stats">
+        <li>Strength: <span id="strength-stat" class="stat-value">10.0</span></li>
+        <li>Endurance: <span id="endurance-stat" class="stat-value">10.0</span></li>
+        <li>Agility: <span id="agility-stat" class="stat-value">10.0</span></li>
+        <li>Perception: <span id="perception-stat" class="stat-value">10.0</span></li>
+    </ul>
+    
+    <div class="exp-bar-container">
+        <div class="exp-label">EXP: <span id="current-exp-display">0</span> / <span id="max-exp-display">100</span></div>
+        <div id="exp-bar" class="exp-bar-fill" style="width: 0%;"></div>
+    </div>
+</div>
         
         <div class="graph-card">
             <h3>[STAT ANALYSIS]</h3>

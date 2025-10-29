@@ -16,6 +16,9 @@ let statGainCounters = {
     perception: 0
 };
 
+let completedTasks = {};
+let currentWeekStart = 0;
+
 let metrics = {
     name: "Limit Breaker",
     height: "5'10\"",
@@ -68,6 +71,8 @@ function saveData() {
     localStorage.setItem('systemMetrics', JSON.stringify(metrics));
     localStorage.setItem('statGainCounters', JSON.stringify(statGainCounters));
     localStorage.setItem('customWorkoutData', JSON.stringify(workoutData));
+    localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+    localStorage.setItem('currentWeekStart', currentWeekStart);
 }
 
 function loadData() {
