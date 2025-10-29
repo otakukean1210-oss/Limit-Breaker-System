@@ -199,7 +199,7 @@ function initAnatomy3D() {
     anatomyScene.add(ambientLight);
 
     anatomyCamera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    anatomyCamera.position.z = 3; 
+    anatomyCamera.position.z = 2.5; 
 
     anatomyRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     anatomyRenderer.setSize(width, height);
@@ -227,8 +227,8 @@ function initAnatomy3D() {
             }
         });
         
-        threeDModel.scale.set(0.6, 0.6, 0.6); 
-        threeDModel.position.set(0, 0.0, 0); 
+        threeDModel.scale.set(0.75, 0.75, 0.75); 
+        threeDModel.position.set(0, -0.4, 0); 
         
         anatomyScene.add(threeDModel);
         animateAnatomy();
