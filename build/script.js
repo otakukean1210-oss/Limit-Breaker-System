@@ -12,12 +12,12 @@ let stats = {
 let statGainCounters = {
     strength: 0,
     endurance: 0,
-    agility: 0,
+    agility: 10,
     perception: 0
 };
 
 let completedTasks = {};
-let currentWeekStart = 0;
+let currentWeekStart = 0; 
 
 let metrics = {
     name: "Limit Breaker",
@@ -62,7 +62,6 @@ const defaultWorkoutData = [
 ];
 
 let workoutData = defaultWorkoutData; 
-
 let myChart = null; 
 let anatomyChart = null; 
 
@@ -166,9 +165,9 @@ function gainExp(amount) {
 function checkWeeklyReset() {
     const today = new Date();
     const todayDay = today.getDay();
-
-    const weekDurationInMs = 604799000; 
-
+    const weekDurationInMs = 604799000;
+    
+    currentWeekStart = parseInt(localStorage.getItem('currentWeekStart') || '0');
     const lastResetTime = new Date(currentWeekStart);
 
     if (currentWeekStart === 0) {
@@ -178,52 +177,80 @@ function checkWeeklyReset() {
     }
 
     if (todayDay === 0 && (today.getTime() - lastResetTime.getTime() >= weekDurationInMs)) {
-
-        completedTasks = {};
-
-        currentWeekStart = today.getTime(); 
         
-        saveData();
+        completedTasks = {}; 
+        currentWeekStart = today.getTime(); 
+        saveData(); 
         
         console.log('[SYSTEM ALERT] New Week, New Quests! Progress reset.');
     }
 }
 
-function getAnatomyChartConfig() {
-    const ctx = document.getElementById('anatomy-chart');
-    if (!ctx) return; 
-    
-    const fatigueData = {
-        labels: ['Muscles', 'Joints', 'Cardio', 'Nervous'],
-        datasets: [{
-            label: 'Fatigue Level',
-            data: [100 - stats.strength * 2, 100 - stats.agility * 2, 100 - stats.endurance * 2, 100 - stats.perception * 2], 
-            backgroundColor: 'rgba(255, 69, 0, 0.4)', 
-            borderColor: 'rgb(255, 69, 0)',
-            pointBackgroundColor: 'rgb(255, 69, 0)',
-            borderWidth: 1,
-            fill: true
-        }]
-    };
+let anatomyScene, anatomyCamera, anatomyRenderer, threeDModel; 
 
-    anatomyChart = new Chart(ctx, {
-        type: 'radar',
-        data: fatigueData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false }, title: { display: false } },
-            scales: {
-                r: {
-                    angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
-                    suggestedMin: 0, 
-                    suggestedMax: 100, 
-                    ticks: { display: false }
-                }
-            },
-            layout: { padding: 5 }
-        }
+function initAnatomy3D() {
+    const container = document.getElementById('anatomy-graph-container');
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    anatomyScene = new THREE.Scene();
+    
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1); 
+    anatomyScene.add(ambientLight);
+
+    anatomyCamera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
+    anatomyCamera.position.z = 2.5; 
+
+    anatomyRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    anatomyRenderer.setSize(width, height);
+
+    container.innerHTML = ''; 
+    container.appendChild(anatomyRenderer.domElement);
+    
+    anatomyRenderer.setClearColor(0x000000, 0); 
+
+    const loader = new THREE.GLTFLoader();
+    
+    const modelPath = 'assets/3d/scene.gltf'; 
+
+    loader.load(modelPath, function(gltf) {
+        threeDModel = gltf.scene;
+
+        threeDModel.traverse(function(child) {
+            if (child.isMesh) {
+                child.material = new THREE.MeshBasicMaterial({
+                    color: 0x445ef2,
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.8
+                });
+            }
+        });
+        
+        threeDModel.scale.set(0.5, 0.5, 0.5); 
+        threeDModel.position.set(0, -1.0, 0); 
+        
+        anatomyScene.add(threeDModel);
+        animateAnatomy();
+        
+    }, undefined, function(error) {
+        console.error('An error occurred loading the 3D model:', error);
+        container.innerHTML = '<h3>[SYSTEM ERROR] Model failed to load.</h3>';
     });
+}
+
+function animateAnatomy() {
+    requestAnimationFrame(animateAnatomy);
+
+    if (threeDModel) {
+        threeDModel.rotation.y += 0.005; 
+    }
+    
+    anatomyRenderer.render(anatomyScene, anatomyCamera);
+}
+
+function getAnatomyChartConfig() {
+    initAnatomy3D();
 }
 
 function renderQuestLog() {
@@ -303,6 +330,9 @@ function saveEditorContent() {
 }
 
 function getChartConfig() {
+    const chartCtx = document.getElementById('stat-chart');
+    if (!chartCtx) return; 
+
     return {
         type: 'radar',
         data: {
@@ -428,8 +458,8 @@ function init() {
 
     checkWeeklyReset(); 
 
-    const chartCtx = document.getElementById('stat-chart');
-    if (chartCtx) myChart = new Chart(chartCtx, getChartConfig());
+    const chartConfig = getChartConfig();
+    if (chartConfig) myChart = new Chart(document.getElementById('stat-chart'), chartConfig);
 
     getAnatomyChartConfig(); 
 
@@ -454,7 +484,7 @@ init();
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
+        navigator.serviceWorker.register('/sw.js') 
             .then(registration => {
                 console.log('SW registered: ', registration);
             })

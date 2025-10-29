@@ -77,11 +77,21 @@ h2 {
     font-size: 1.1em;
 }
 
-#anatomy-graph-container {
-    padding: 5px;
-    border: 1px solid rgba(164, 128, 242, 0.2);
-    border-radius: 4px;
+.status-section {
+    height: 300px; 
+    position: relative;
+    overflow: hidden;
 }
+
+#anatomy-graph-container {
+    height: 100%; 
+    width: 100%;
+}
+
+#anatomy-graph-container canvas {
+    display: block;
+}
+
 
 .graph-card {
     grid-column: 2 / 3;
@@ -288,7 +298,7 @@ input[type="checkbox"]:checked::after {
 
 .system-btn:hover {
     background-color: var(--primary-color);
-    box-shadow: 0 0 10px var(--border-glow);
+    box-shadow: 0 0 10px rgba(164, 128, 242, 0.7);
 }
 
 .modal-overlay {
