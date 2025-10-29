@@ -387,6 +387,57 @@ function init() {
     attachListeners();
 }
 
+function handleAddProfile() {
+    const newName = prompt("Enter the new Player Name:");
+
+    if (newName && newName.trim() !== "" && !profiles[newName]) {
+
+        saveActiveProfileData(); 
+
+        loadProfileData(newName); 
+
+        renderProfileSelect();
+        
+        alert(`[SYSTEM ALERT] New Player ${newName} has been created!`);
+        
+    } else if (profiles[newName]) {
+        alert("A profile with that name already exists. Please switch or choose another name.");
+    }
+}
+
+function handleSwitchProfile() {
+    const select = document.getElementById('user-profile-select');
+    const selectedName = select.value;
+
+    if (selectedName !== activeProfileName) {
+
+        saveActiveProfileData(); 
+
+        loadProfileData(selectedName); 
+
+        renderProfileSelect();
+    }
+}
+
+function renderProfileSelect() {
+    const select = document.getElementById('user-profile-select');
+    select.innerHTML = '';
+
+    if (!profiles[activeProfileName]) {
+        profiles[activeProfileName] = {}; 
+    }
+    
+    Object.keys(profiles).forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        if (name === activeProfileName) {
+            option.selected = true;
+        }
+        select.appendChild(option);
+    });
+}
+
 init();
 
 if ('serviceWorker' in navigator) {
