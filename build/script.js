@@ -106,6 +106,9 @@ function loadData() {
     }
     const savedWeekStart = localStorage.getItem('currentWeekStart');
     if (savedWeekStart) currentWeekStart = parseInt(savedWeekStart);
+
+    const savedCompletedTasks = localStorage.getItem('completedTasks');
+    if (savedCompletedTasks) completedTasks = JSON.parse(savedCompletedTasks); 
 }
 
 function findHighestStatFocus() {
@@ -249,6 +252,27 @@ function animateAnatomy() {
     anatomyRenderer.render(anatomyScene, anatomyCamera);
 }
 
+function updateAnatomyGlow() {
+    if (!threeDModel) return;
+
+    const enduranceScore = stats.endurance;
+
+    let hexColor;
+    if (enduranceScore < 15) {
+        hexColor = 0xFF0000;
+    } else if (enduranceScore < 25) {
+        hexColor = 0xFFA500;
+    } else {
+        hexColor = 0x445ef2;
+    }
+
+    threeDModel.traverse(function(child) {
+        if (child.isMesh && child.material) {
+            child.material.color.setHex(hexColor);
+        }
+    });
+}
+
 function getAnatomyChartConfig() {
     initAnatomy3D();
 }
@@ -261,7 +285,13 @@ function renderQuestLog() {
     
     workoutData.forEach((dayData, dayIndex) => {
         let tasksHtml = '<div class="task-list">';
+
+        const dayKey = `day-${dayIndex}`; 
+
         dayData.tasks.forEach((task, taskIndex) => {
+            const taskKey = `${dayKey}-task-${taskIndex}`; 
+            const isCompleted = completedTasks[taskKey] === true;
+
             tasksHtml += `
                 <label>
                     <input 
@@ -271,7 +301,7 @@ function renderQuestLog() {
                         data-stat-focus="${task.focus}"
                         data-day-index="${dayIndex}"
                         data-task-index="${taskIndex}"
-                    > 
+                        ${isCompleted ? 'checked' : ''}  > 
                     ${task.name}
                 </label><br>
             `;
@@ -420,17 +450,22 @@ function handleCheckboxChange(event) {
     if (checkbox.classList.contains('task-checkbox')) {
         const expValue = parseInt(checkbox.dataset.exp);
         const statFocus = checkbox.dataset.statFocus;
+        const dayIndex = checkbox.dataset.dayIndex;
+        const taskIndex = checkbox.dataset.taskIndex;
+        const taskKey = `day-${dayIndex}-task-${taskIndex}`;
 
         if (checkbox.checked) {
             gainExp(expValue);
             if (statFocus && statGainCounters[statFocus] !== undefined) {
                 statGainCounters[statFocus]++;
             }
+            completedTasks[taskKey] = true;
         } else {
             gainExp(-expValue);
             if (statFocus && statGainCounters[statFocus] !== undefined) {
                 statGainCounters[statFocus]--;
             }
+            delete completedTasks[taskKey];
         }
     } 
     
@@ -442,6 +477,8 @@ function handleCheckboxChange(event) {
             row.classList.remove('completed');
         }
     }
+
+    updateAnatomyGlow();
 
     saveData(); 
 }
@@ -459,9 +496,12 @@ function init() {
     checkWeeklyReset(); 
 
     const chartConfig = getChartConfig();
-    if (chartConfig) myChart = new Chart(document.getElementById('stat-chart'), chartConfig);
 
+    if (chartConfig) myChart = new Chart(document.getElementById('stat-chart'), chartConfig);
+    
     getAnatomyChartConfig(); 
+
+    updateAnatomyGlow();
 
     renderQuestLog();
     attachListeners();
