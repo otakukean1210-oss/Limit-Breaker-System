@@ -63,6 +63,9 @@ const defaultWorkoutData = [
 
 let workoutData = defaultWorkoutData; 
 
+let myChart = null; 
+let anatomyChart = null; 
+
 function saveData() {
     localStorage.setItem('systemLevel', level);
     localStorage.setItem('systemCurrentExp', currentExp);
@@ -72,7 +75,7 @@ function saveData() {
     localStorage.setItem('statGainCounters', JSON.stringify(statGainCounters));
     localStorage.setItem('customWorkoutData', JSON.stringify(workoutData));
     localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
-    localStorage.setItem('currentWeekStart', currentWeekStart);
+    localStorage.setItem('currentWeekStart', currentWeekStart); 
 }
 
 function loadData() {
@@ -102,6 +105,8 @@ function loadData() {
             workoutData = defaultWorkoutData;
         }
     }
+    const savedWeekStart = localStorage.getItem('currentWeekStart');
+    if (savedWeekStart) currentWeekStart = parseInt(savedWeekStart);
 }
 
 function findHighestStatFocus() {
@@ -158,6 +163,32 @@ function gainExp(amount) {
     saveData(); 
 }
 
+function checkWeeklyReset() {
+    const today = new Date();
+    const todayDay = today.getDay();
+
+    const weekDurationInMs = 604799000; 
+
+    const lastResetTime = new Date(currentWeekStart);
+
+    if (currentWeekStart === 0) {
+        currentWeekStart = today.getTime();
+        saveData();
+        return;
+    }
+
+    if (todayDay === 0 && (today.getTime() - lastResetTime.getTime() >= weekDurationInMs)) {
+
+        completedTasks = {};
+
+        currentWeekStart = today.getTime(); 
+        
+        saveData();
+        
+        console.log('[SYSTEM ALERT] New Week, New Quests! Progress reset.');
+    }
+}
+
 function getAnatomyChartConfig() {
     const ctx = document.getElementById('anatomy-chart');
     if (!ctx) return; 
@@ -175,7 +206,7 @@ function getAnatomyChartConfig() {
         }]
     };
 
-    new Chart(ctx, {
+    anatomyChart = new Chart(ctx, {
         type: 'radar',
         data: fatigueData,
         options: {
@@ -270,9 +301,6 @@ function saveEditorContent() {
         console.error("JSON Parsing Error:", e);
     }
 }
-
-const ctx = document.getElementById('stat-chart');
-let myChart = null; 
 
 function getChartConfig() {
     return {
@@ -400,23 +428,26 @@ function init() {
 
     checkWeeklyReset(); 
 
-    const profileSelect = document.getElementById('user-profile-select');
-    if (profileSelect) profileSelect.remove();
-    const addBtn = document.getElementById('add-profile-btn');
-    if (addBtn) addBtn.remove();
-    const switchBtn = document.getElementById('switch-profile-btn');
-    if (switchBtn) switchBtn.remove();
-
     const chartCtx = document.getElementById('stat-chart');
     if (chartCtx) myChart = new Chart(chartCtx, getChartConfig());
 
-    getAnatomyChartConfig();
+    getAnatomyChartConfig(); 
 
     renderQuestLog();
     attachListeners();
 
     updateStatsDisplay();
     updateExpBar();
+
+    document.getElementById('name-input').addEventListener('change', handleInputSave);
+    document.getElementById('height-input').addEventListener('change', handleInputSave);
+    document.getElementById('weight-input').addEventListener('change', handleInputSave);
+
+    document.getElementById('edit-quests-btn').addEventListener('click', openEditor);
+    document.getElementById('save-editor-btn').addEventListener('click', saveEditorContent);
+    document.getElementById('close-editor-btn').addEventListener('click', closeEditor);
+
+    attachListeners();
 }
 
 init();
