@@ -77,6 +77,12 @@ h2 {
     font-size: 1.1em;
 }
 
+#anatomy-graph-container {
+    padding: 5px;
+    border: 1px solid rgba(164, 128, 242, 0.2);
+    border-radius: 4px;
+}
+
 .graph-card {
     grid-column: 2 / 3;
     height: 450px;

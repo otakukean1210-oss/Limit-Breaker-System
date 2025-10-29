@@ -158,6 +158,43 @@ function gainExp(amount) {
     saveData(); 
 }
 
+function getAnatomyChartConfig() {
+    const ctx = document.getElementById('anatomy-chart');
+    if (!ctx) return; 
+    
+    const fatigueData = {
+        labels: ['Muscles', 'Joints', 'Cardio', 'Nervous'],
+        datasets: [{
+            label: 'Fatigue Level',
+            data: [100 - stats.strength * 2, 100 - stats.agility * 2, 100 - stats.endurance * 2, 100 - stats.perception * 2], 
+            backgroundColor: 'rgba(255, 69, 0, 0.4)', 
+            borderColor: 'rgb(255, 69, 0)',
+            pointBackgroundColor: 'rgb(255, 69, 0)',
+            borderWidth: 1,
+            fill: true
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'radar',
+        data: fatigueData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, title: { display: false } },
+            scales: {
+                r: {
+                    angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                    suggestedMin: 0, 
+                    suggestedMax: 100, 
+                    ticks: { display: false }
+                }
+            },
+            layout: { padding: 5 }
+        }
+    });
+}
+
 function renderQuestLog() {
     const tbody = document.getElementById('quest-log-body');
     tbody.innerHTML = ''; 
@@ -359,85 +396,27 @@ function attachListeners() {
 }
 
 function init() {
-    loadData(); 
-    
-    if (!statGainCounters.strength) {
-        statGainCounters = { strength: 0, endurance: 0, agility: 0, perception: 0 };
-    }
+    loadData();
 
-    renderQuestLog(); 
+    checkWeeklyReset(); 
 
-    myChart = new Chart(ctx, getChartConfig());
+    const profileSelect = document.getElementById('user-profile-select');
+    if (profileSelect) profileSelect.remove();
+    const addBtn = document.getElementById('add-profile-btn');
+    if (addBtn) addBtn.remove();
+    const switchBtn = document.getElementById('switch-profile-btn');
+    if (switchBtn) switchBtn.remove();
+
+    const chartCtx = document.getElementById('stat-chart');
+    if (chartCtx) myChart = new Chart(chartCtx, getChartConfig());
+
+    getAnatomyChartConfig();
+
+    renderQuestLog();
+    attachListeners();
 
     updateStatsDisplay();
     updateExpBar();
-
-    document.getElementById('name-input').addEventListener('change', handleInputSave);
-    document.getElementById('height-input').addEventListener('change', handleInputSave);
-    document.getElementById('weight-input').addEventListener('change', handleInputSave);
-
-    document.getElementById('add-profile-btn').addEventListener('click', handleAddProfile);
-    docuument.getElementById('user-profile-select').addEventListener('click', handleSwitchProfile);
-    document.getElementById('switch-profile-btn').addEventListener('click', handleSwitchProfile);
-
-    document.getElementById('edit-quests-btn').addEventListener('click', openEditor);
-    document.getElementById('save-editor-btn').addEventListener('click', saveEditorContent);
-    document.getElementById('close-editor-btn').addEventListener('click', closeEditor);
-
-    attachListeners();
-}
-
-function handleAddProfile() {
-    const newName = prompt("Enter the new Player Name:");
-
-    if (newName && newName.trim() !== "" && !profiles[newName]) {
-
-        saveActiveProfileData(); 
-
-        loadProfileData(newName); 
-
-        renderProfileSelect();
-        
-        alert(`[SYSTEM ALERT] New Player ${newName} has been created!`);
-        
-    } else if (profiles[newName]) {
-        alert("A profile with that name already exists. Please switch or choose another name.");
-    }
-}
-
-function handleSwitchProfile() {
-    const select = document.getElementById('user-profile-select');
-    const selectedName = select.value;
-
-    if (selectedName !== activeProfileName) {
-
-        saveActiveProfileData(); 
-
-        loadProfileData(selectedName); 
-
-        renderProfileSelect();
-
-        console.log(`Switched profile to: ${selectedName}`);
-    }
-}
-
-function renderProfileSelect() {
-    const select = document.getElementById('user-profile-select');
-    select.innerHTML = '';
-
-    if (!profiles[activeProfileName]) {
-        profiles[activeProfileName] = {}; 
-    }
-    
-    Object.keys(profiles).forEach(name => {
-        const option = document.createElement('option');
-        option.value = name;
-        option.textContent = name;
-        if (name === activeProfileName) {
-            option.selected = true;
-        }
-        select.appendChild(option);
-    });
 }
 
 init();
