@@ -416,6 +416,8 @@ function handleSwitchProfile() {
         loadProfileData(selectedName); 
 
         renderProfileSelect();
+
+        console.log(`Switched profile to: ${selectedName}`);
     }
 }
 
