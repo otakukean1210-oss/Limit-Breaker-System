@@ -74,7 +74,8 @@ function saveData() {
     localStorage.setItem('statGainCounters', JSON.stringify(statGainCounters));
     localStorage.setItem('customWorkoutData', JSON.stringify(workoutData));
     localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
-    localStorage.setItem('currentWeekStart', currentWeekStart); 
+    localStorage.setItem('currentWeekStart', currentWeekStart);
+    localStorage.setItem('fatigueScore', fatigueScore); 
 }
 
 function loadData() {
@@ -109,6 +110,9 @@ function loadData() {
 
     const savedCompletedTasks = localStorage.getItem('completedTasks');
     if (savedCompletedTasks) completedTasks = JSON.parse(savedCompletedTasks); 
+
+    const savedFatigue = localStorage.getItem('fatigueScore');
+    if (savedFatigue) fatigueScore = parseFloat(savedFatigue);
 }
 
 function findHighestStatFocus() {
@@ -428,6 +432,15 @@ function updateStatsDisplay() {
     }
 }
 
+let fatigueScore = 0; 
+
+function updateFatigueDisplay() {
+
+    document.getElementById('fatigue-stat').textContent = fatigueScore.toFixed(1);
+
+    updateAnatomyGlow();
+}
+
 function updateExpBar() {
     const percentage = Math.min(100, (currentExp / expToNextLevel) * 100);
     document.getElementById('exp-bar').style.width = `${percentage}%`;
@@ -452,16 +465,21 @@ function handleCheckboxChange(event) {
         const statFocus = checkbox.dataset.statFocus;
         const dayIndex = checkbox.dataset.dayIndex;
         const taskIndex = checkbox.dataset.taskIndex;
+        
         const taskKey = `day-${dayIndex}-task-${taskIndex}`;
+
+        const fatigueChange = expValue * 0.2; 
 
         if (checkbox.checked) {
             gainExp(expValue);
+            fatigueScore = Math.min(100, fatigueScore + fatigueChange);
             if (statFocus && statGainCounters[statFocus] !== undefined) {
                 statGainCounters[statFocus]++;
             }
             completedTasks[taskKey] = true;
         } else {
             gainExp(-expValue);
+            fatigueScore = Math.max(0, fatigueScore - fatigueChange);
             if (statFocus && statGainCounters[statFocus] !== undefined) {
                 statGainCounters[statFocus]--;
             }
@@ -478,7 +496,7 @@ function handleCheckboxChange(event) {
         }
     }
 
-    updateAnatomyGlow();
+    updateFatigueDisplay(); 
 
     saveData(); 
 }
@@ -500,6 +518,8 @@ function init() {
     if (chartConfig) myChart = new Chart(document.getElementById('stat-chart'), chartConfig);
     
     getAnatomyChartConfig(); 
+
+    updateFatigueDisplay();
 
     updateAnatomyGlow();
 
